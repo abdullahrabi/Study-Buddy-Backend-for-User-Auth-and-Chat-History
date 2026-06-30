@@ -78,18 +78,7 @@ mongoose.connect(MONGODB_URI)
         console.log(`✅ Connected to MongoDB`);
         console.log(`📡 Server running on port ${PORT}`);
         console.log('='.repeat(60));
-        console.log('📌 Available Endpoints:');
-        console.log('  POST /auth/signup       - Sign up');
-        console.log('  POST /auth/login        - Login');
-        console.log('  GET  /auth/verify       - Verify token');
-        console.log('  GET  /auth/user         - Get user info');
-        console.log('  POST /api/evaluate      - Save conversation');
-        console.log('  GET  /api/history       - Get chat history');
-        console.log('  GET  /api/conversations - Get conversations');
-        console.log('  POST /api/history/clear - Clear history');
-        console.log('  GET  /health            - Health check');
         console.log('='.repeat(60));
-        
         app.listen(PORT, () => {
             console.log(`✅ Server started on port ${PORT}`);
         });
