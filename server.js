@@ -4,7 +4,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// Import routes
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 
@@ -17,15 +16,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
+// Routes
 app.get('/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString()
-    });
+    res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
-// Root endpoint
 app.get('/', (req, res) => {
     res.json({
         name: 'StudyBuddy API',
@@ -48,50 +43,31 @@ app.get('/', (req, res) => {
     });
 });
 
-// Routes
 app.use('/auth', authRoutes);
 app.use('/api', chatRoutes);
 
-// 404 handler
+// Error handlers
 app.use((req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        status: 'error'
-    });
+    res.status(404).json({ error: 'Route not found', status: 'error' });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
-    res.status(500).json({
-        error: 'Internal server error',
-        status: 'error'
-    });
+    res.status(500).json({ error: 'Internal server error', status: 'error' });
 });
 
-// Connect to MongoDB and start server
-mongoose.connect(MONGODB_URI)
-    .then(() => {
-        console.log('='.repeat(60));
-        console.log('🚀 StudyBuddy API Server');
-        console.log('='.repeat(60));
-        console.log(`✅ Connected to MongoDB`);
-        console.log(`📡 Server running on port ${PORT}`);
-        console.log('='.repeat(60));
-        console.log('='.repeat(60));
-        app.listen(PORT, () => {
-            console.log(`✅ Server started on port ${PORT}`);
+// Export app for Vercel
+module.exports = app;
+
+// Start server only when running locally (not on Vercel)
+if (require.main === module) {
+    mongoose.connect(MONGODB_URI)
+        .then(() => {
+            console.log(`✅ Server running on port ${PORT}`);
+            app.listen(PORT);
+        })
+        .catch(error => {
+            console.error('❌ MongoDB connection error:', error.message);
+            process.exit(1);
         });
-    })
-    .catch(error => {
-        console.error('❌ MongoDB connection error:', error.message);
-        process.exit(1);
-    });
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-    mongoose.connection.close(() => {
-        console.log('\n📴 MongoDB connection closed');
-        process.exit(0);
-    });
-});
+}
