@@ -22,25 +22,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.json({
-        name: 'StudyBuddy API',
-        version: '1.0.0',
-        endpoints: {
-            auth: {
-                signup: 'POST /auth/signup',
-                login: 'POST /auth/login',
-                verify: 'GET /auth/verify',
-                user: 'GET /auth/user'
-            },
-            chat: {
-                evaluate: 'POST /api/evaluate',
-                history: 'GET /api/history',
-                conversations: 'GET /api/conversations',
-                clear_history: 'POST /api/history/clear'
-            },
-            health: 'GET /health'
-        }
-    });
+    res.send('StudyBuddy API is running. Use /health for status.');
 });
 
 app.use('/auth', authRoutes);
